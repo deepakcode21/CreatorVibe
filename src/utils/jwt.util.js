@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-// ─── ACCESS TOKEN BANAO ──────────────────────────────
-// 15 minute wala — har request ke saath bhejte hain
+// ─── GENERATE ACCESS TOKEN ───────────────────────────
+// Valid for 15 minutes — sent with every authenticated request
 export const generateAccessToken = (user) => {
   return jwt.sign(
     {
@@ -18,20 +18,20 @@ export const generateAccessToken = (user) => {
   );
 };
 
-// ─── REFRESH TOKEN BANAO ─────────────────────────────
-// 7 din wala — sirf naya access token lene ke liye
+// ─── GENERATE REFRESH TOKEN ──────────────────────────
+// Valid for 7 days — used exclusively to obtain a new access token
 export const generateRefreshToken = (userId) => {
   return jwt.sign(
     {
       sub: userId,
-      jti: uuidv4(), // Har token ka unique ID
+      jti: uuidv4(), // Unique identifier for each token
     },
     REFRESH_SECRET,
     { expiresIn: "7d" }
   );
 };
 
-// ─── DONO EK SAATH BANAO ─────────────────────────────
+// ─── GENERATE TOKEN PAIR ─────────────────────────────
 export const generateTokens = (user) => {
   return {
     accessToken: generateAccessToken(user),
@@ -39,7 +39,7 @@ export const generateTokens = (user) => {
   };
 };
 
-// ─── TOKEN VERIFY KARO ───────────────────────────────
+// ─── TOKEN VERIFICATION ──────────────────────────────
 export const verifyAccessToken = (token) => {
   return jwt.verify(token, ACCESS_SECRET);
 };

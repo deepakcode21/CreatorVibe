@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config({quiet: true});
 
-// Saari env variables ek jagah — 
-// Agar koi missing hai toh app start hote hi bata dega
+// All environment variables in one place — 
+// The app will notify at startup if any are missing
 
 export const env = {
   // App
@@ -37,9 +37,14 @@ export const env = {
   // Resend Email
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
 
-// Check karo — koi important variable missing to nahi?
+// Validate — check if any required variables are missing
 const required = [
   "SUPABASE_URL",
   "SUPABASE_ANON_KEY",
@@ -58,8 +63,8 @@ const required = [
 const missing = required.filter((key) => !process.env[key]);
 
 if (missing.length > 0) {
-  console.error("❌ Ye env variables missing hain:", missing.join(", "));
-  process.exit(1); // App band kar do
+  console.error("The following environment variables are missing:", missing.join(", "));
+  process.exit(1); // Terminate the process
 }
 
-console.log("✅ Saari env variables load ho gayi!");
+console.log("All environment variables loaded successfully!");

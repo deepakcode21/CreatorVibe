@@ -12,35 +12,35 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
     await resend.emails.send({
       from: env.EMAIL_FROM,
       to: email,
-      subject: "CreatorVibe — Password Reset Karo",
+      subject: "CreatorVibe — Password Reset Request",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #FFE500; background: #080A0F; padding: 20px; text-align: center;">
-            ⚡ CreatorVibe
+            CreatorVibe
           </h2>
           <div style="padding: 30px; background: #f9f9f9;">
             <h3>Password Reset Request</h3>
-            <p>Tumne password reset karne ki request ki hai.</p>
-            <p>Neeche button click karo — ye link <strong>15 minute</strong> tak valid hai:</p>
+            <p>You have requested to reset your password.</p>
+            <p>Click the button below to proceed — this link is valid for <strong>15 minutes</strong>:</p>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}"
-                style="background: #FFE500; color: #080A0F; padding: 14px 28px;
+              <a href="${resetUrl}" 
+                style="background: #FFE500; color: #080A0F; padding: 14px 28px; 
                 text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
-                Password Reset Karo
+                Reset Password
               </a>
             </div>
             <p style="color: #666; font-size: 13px;">
-              Agar tumne ye request nahi ki — ignore kar do. 
-              Tumhara account safe hai.
+              If you did not make this request, please ignore this email. 
+              Your account remains secure.
             </p>
           </div>
         </div>
       `,
     });
 
-    logger.info(`Password reset email bheja: ${email}`);
+    logger.info(`Password reset email sent to: ${email}`);
   } catch (err) {
-    logger.error("Email bhejne mein error:", err.message);
-    throw new Error("Email nahi bhej paaye");
+    logger.error("Error sending email:", err.message);
+    throw new Error("Failed to send email");
   }
 };

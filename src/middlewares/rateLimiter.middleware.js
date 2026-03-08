@@ -1,38 +1,38 @@
 import rateLimit from "express-rate-limit";
 
 // ─── AUTH ROUTES LIMITER ─────────────────────────────
-// Login/Register par strict limit — spam rokne ke liye
+// Strict limits for Login/Register — to prevent spam and brute force
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10,                   // 15 minute mein sirf 10 requests
+  max: 10,                   // Limit each IP to 10 requests per window
   message: {
     success: false,
-    message: "Bahut zyada requests! 15 minute baad try karo.",
+    message: "Too many requests. Please try again after 15 minutes.",
   },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 // ─── GENERAL API LIMITER ─────────────────────────────
-// Baaki saari APIs ke liye
+// Standard rate limit for all other API endpoints
 export const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 100,            // 1 minute mein 100 requests
+  max: 100,            // Limit each IP to 100 requests per minute
   message: {
     success: false,
-    message: "Bahut zyada requests! Thoda ruko.",
+    message: "Too many requests. Please slow down.",
   },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 // ─── SUPERCHAT LIMITER ───────────────────────────────
-// Payment requests pe extra strict
+// Enhanced restriction on payment-related requests
 export const superchatLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 5,              // 1 minute mein sirf 5 superchats
+  max: 5,               // Limit each IP to 5 superchat requests per minute
   message: {
     success: false,
-    message: "Itni jaldi superchat nahi kar sakte!",
+    message: "Rate limit exceeded. Please wait before sending another superchat.",
   },
 });

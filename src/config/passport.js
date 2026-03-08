@@ -9,7 +9,7 @@ import { logger } from "../utils/logger.util.js";
 export const configurePassport = () => {
 
   // ─── JWT STRATEGY ──────────────────────────────────
-  // Protected routes ke liye — token check karta hai
+  // For protected routes — validates the access token
   passport.use(
     new JwtStrategy(
       {
@@ -36,7 +36,7 @@ export const configurePassport = () => {
   );
 
   // ─── GOOGLE STRATEGY ───────────────────────────────
-  // Sirf login ke liye — YouTube se alag!
+  // Authentication only — separate from YouTube scopes
   passport.use(
     new GoogleStrategy(
       {
@@ -51,10 +51,10 @@ export const configurePassport = () => {
           const avatar = profile.photos?.[0]?.value;
 
           if (!email) {
-            return done(null, false, { message: "Email nahi mila Google se" });
+            return done(null, false, { message: "Email not provided by Google" });
           }
 
-          // Pehle check karo — ye Google account linked hai?
+          // Check if this Google account is already linked
           const { data: existingOAuth } = await supabaseAdmin
             .from("oauth_accounts")
             .select("*, users(*)")
@@ -63,11 +63,11 @@ export const configurePassport = () => {
             .single();
 
           if (existingOAuth) {
-            // Pehle se linked hai — seedha login
+            // Already linked — proceed to login
             return done(null, existingOAuth.users);
           }
 
-          // Same email se koi user hai?
+          // Check if a user exists with the same email
           const { data: existingUser } = await supabaseAdmin
             .from("users")
             .select("*")
@@ -75,7 +75,7 @@ export const configurePassport = () => {
             .single();
 
           if (existingUser) {
-            // User hai — Google account link karo
+            // User exists — link Google account
             await supabaseAdmin.from("oauth_accounts").insert({
               user_id: existingUser.id,
               provider: "google",
@@ -84,7 +84,7 @@ export const configurePassport = () => {
             return done(null, existingUser);
           }
 
-          // Bilkul naya user — banao
+          // New user — create account
           const username = await generateUsername(
             profile.displayName || email.split("@")[0]
           );
@@ -110,7 +110,7 @@ export const configurePassport = () => {
             provider_id: profile.id,
           });
 
-          logger.info(`Naya Google user: ${newUser.username}`);
+          logger.info(`New Google user created: ${newUser.username}`);
           return done(null, newUser);
 
         } catch (err) {
@@ -138,10 +138,10 @@ export const configurePassport = () => {
             : null;
 
           if (!email) {
-            return done(null, false, { message: "Email nahi mila Discord se" });
+            return done(null, false, { message: "Email not provided by Discord" });
           }
 
-          // Pehle check karo — linked hai?
+          // Check if Discord account is linked
           const { data: existingOAuth } = await supabaseAdmin
             .from("oauth_accounts")
             .select("*, users(*)")
@@ -153,7 +153,7 @@ export const configurePassport = () => {
             return done(null, existingOAuth.users);
           }
 
-          // Same email se user hai?
+          // Check if a user exists with the same email
           const { data: existingUser } = await supabaseAdmin
             .from("users")
             .select("*")
@@ -169,7 +169,7 @@ export const configurePassport = () => {
             return done(null, existingUser);
           }
 
-          // Naya user banao
+          // Create new user
           const username = await generateUsername(
             profile.username || email.split("@")[0]
           );
@@ -195,7 +195,7 @@ export const configurePassport = () => {
             provider_id: profile.id,
           });
 
-          logger.info(`Naya Discord user: ${newUser.username}`);
+          logger.info(`New Discord user created: ${newUser.username}`);
           return done(null, newUser);
 
         } catch (err) {
@@ -206,7 +206,7 @@ export const configurePassport = () => {
     )
   );
 
-  logger.info("✅ Passport configure ho gaya!");
+  logger.info("Passport configuration completed successfully");
 };
 
 // ─── HELPER — UNIQUE USERNAME ───────────────────────
@@ -226,7 +226,7 @@ const generateUsername = async (base) => {
       .eq("username", username)
       .single();
 
-    if (!data) return username; // Available hai!
+    if (!data) return username; // Username is available
     username = `${clean}_${counter++}`;
   }
 };

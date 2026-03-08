@@ -1,4 +1,4 @@
-// Console mein sahi se logs dikhane ke liye
+// Utility for formatted console logging
 
 const colors = {
   reset: "\x1b[0m",

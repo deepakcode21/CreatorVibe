@@ -1,25 +1,24 @@
-
 import { logger } from "../utils/logger.util.js";
 
 // ─── 404 HANDLER ─────────────────────────────────────
-// Koi route match nahi hua
+// Triggered when no matching route is found
 export const notFoundHandler = (req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.method} ${req.path} exist nahi karta`,
+    message: `Route ${req.method} ${req.path} does not exist`,
   });
 };
 
 // ─── GLOBAL ERROR HANDLER ────────────────────────────
-// Koi bhi error aaye — yahan aayega
+// Catch-all middleware for handling any internal errors
 export const errorHandler = (err, req, res, next) => {
   logger.error(`${req.method} ${req.path} — ${err.message}`);
 
-  // Supabase errors
+  // Supabase unique constraint errors
   if (err.code === "23505") {
     return res.status(409).json({
       success: false,
-      message: "Ye record already exist karta hai",
+      message: "This record already exists",
     });
   }
 
@@ -27,21 +26,21 @@ export const errorHandler = (err, req, res, next) => {
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({
       success: false,
-      message: "Invalid token hai",
+      message: "Invalid token provided",
     });
   }
 
   if (err.name === "TokenExpiredError") {
     return res.status(401).json({
       success: false,
-      message: "Token expire ho gaya — dobara login karo",
+      message: "Token has expired — please log in again",
     });
   }
 
-  // Custom errors
+  // Custom and Internal Server Errors
   const statusCode = err.statusCode || 500;
   const message =
-    statusCode < 500 ? err.message : "Server mein kuch gadbad hui";
+    statusCode < 500 ? err.message : "An internal server error occurred";
 
   res.status(statusCode).json({
     success: false,

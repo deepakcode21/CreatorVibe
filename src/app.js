@@ -11,6 +11,7 @@ import { checkSupabaseConnection } from "./config/supabase.js";
 import { logger } from "./utils/logger.util.js";
 import { apiLimiter } from "./middlewares/rateLimiter.middleware.js";
 import { notFoundHandler, errorHandler } from "./middlewares/errorHandler.middleware.js";
+import creatorRoutes from "./modules/creator/creator.routes.js";
 
 // ─── ROUTES ───────────────────────────────────────────
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -40,31 +41,32 @@ app.use(passport.initialize());
 app.get("/health", (req, res) => {
   res.json({
     success: true,
-    message: "CreatorVibe API chal raha hai! 🚀",
+    message: "CreatorVibe API is operational",
     timestamp: new Date().toISOString(),
   });
 });
 
 // ─── ROUTES ───────────────────────────────────────────
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/creators", creatorRoutes);
 
 // ─── ERROR HANDLERS ───────────────────────────────────
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// ─── SERVER START ─────────────────────────────────────
+// ─── SERVER STARTUP ───────────────────────────────────
 const startServer = async () => {
   try {
-    // Supabase check karo
+    // Verify Supabase connection
     await checkSupabaseConnection();
 
     app.listen(env.PORT, () => {
-      logger.info(`🚀 Server chal raha hai port ${env.PORT} par`);
-      logger.info(`🌍 Environment: ${env.NODE_ENV}`);
-      logger.info(`📌 Health check: http://localhost:${env.PORT}/health`);
+      logger.info(`Server is running on port ${env.PORT}`);
+      logger.info(`Environment: ${env.NODE_ENV}`);
+      logger.info(`Health check endpoint: http://localhost:${env.PORT}/health`);
     });
   } catch (err) {
-    logger.error("Server start nahi ho paya:", err.message);
+    logger.error("Failed to start server:", err.message);
     process.exit(1);
   }
 };

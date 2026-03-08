@@ -8,8 +8,8 @@ import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema 
 
 const router = Router();
 
-// ─── LOCAL AUTH ───────────────────────────────────────
-// Email + Password
+// ─── LOCAL AUTHENTICATION ─────────────────────────────
+// Email and Password flow
 router.post("/register",
   authLimiter,
   validate(registerSchema),
@@ -68,11 +68,11 @@ router.get("/discord/callback",
   authController.oauthCallback
 );
 
-// ─── OAUTH FAILED ─────────────────────────────────────
+// ─── OAUTH FAILURE HANDLER ────────────────────────────
 router.get("/failed", (req, res) => {
   res.status(401).json({
     success: false,
-    message: "OAuth login fail ho gaya",
+    message: "OAuth authentication failed",
   });
 });
 

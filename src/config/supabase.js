@@ -3,15 +3,15 @@ import { env } from "./env.js";
 import { logger } from "../utils/logger.util.js";
 
 // ─── NORMAL CLIENT ───────────────────────────────────
-// Frontend requests ke liye — limited access
+// For frontend requests — restricted access
 export const supabase = createClient(
   env.SUPABASE_URL,
   env.SUPABASE_ANON_KEY
 );
 
 // ─── ADMIN CLIENT ────────────────────────────────────
-// Backend ke liye — full access
-// Kabhi bhi frontend ko mat dena ye key!
+// For backend operations — full administrative access
+// SECURITY WARNING: Never expose this service key to the frontend!
 export const supabaseAdmin = createClient(
   env.SUPABASE_URL,
   env.SUPABASE_SERVICE_KEY
@@ -25,15 +25,15 @@ export const checkSupabaseConnection = async () => {
       .select("count")
       .limit(1);
 
-    // Table exist nahi karti abhi — that's okay!
-    // Bas connection check kar rahe hain
+    // If table doesn't exist yet (code 42P01), that's acceptable
+    // We are only verifying the connection integrity
     if (error && error.code !== "42P01") {
       throw error;
     }
 
-    logger.info("✅ Supabase connected!");
+    logger.info("Supabase connected successfully");
   } catch (err) {
-    logger.error("❌ Supabase connection failed:", err.message);
+    logger.error("Supabase connection failed:", err.message);
     process.exit(1);
   }
 };
