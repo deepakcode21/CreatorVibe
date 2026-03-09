@@ -42,6 +42,29 @@ export const env = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+
+  // Razorpay
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+  RAZORPAY_WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET,
+
+  // Cashfree
+  CASHFREE_APP_ID: process.env.CASHFREE_APP_ID,
+  CASHFREE_SECRET_KEY: process.env.CASHFREE_SECRET_KEY,
+  CASHFREE_WEBHOOK_SECRET: process.env.CASHFREE_WEBHOOK_SECRET,
+
+  // Stripe
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+
+  // PayU
+  PAYU_KEY: process.env.PAYU_KEY,
+  PAYU_SALT: process.env.PAYU_SALT,
+  PAYU_WEBHOOK_SECRET: process.env.PAYU_WEBHOOK_SECRET,
+
+  // Platform Config
+  PLATFORM_FEE_PERCENTAGE: process.env.PLATFORM_FEE_PERCENTAGE || "2.9",
+  MIN_SUPERCHAT_AMOUNT: process.env.MIN_SUPERCHAT_AMOUNT || "20",
 };
 
 // Validate — check if any required variables are missing
@@ -58,6 +81,13 @@ const required = [
   "UPSTASH_REDIS_REST_TOKEN",
   "RESEND_API_KEY",   
   "EMAIL_FROM",       
+  "RAZORPAY_KEY_ID",
+  "RAZORPAY_KEY_SECRET",
+  "CASHFREE_APP_ID", 
+  "CASHFREE_SECRET_KEY",
+  "STRIPE_SECRET_KEY",
+  "PAYU_KEY",
+  "PAYU_SALT",
 ];
 
 const missing = required.filter((key) => !process.env[key]);

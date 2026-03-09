@@ -12,6 +12,10 @@ import { logger } from "./utils/logger.util.js";
 import { apiLimiter } from "./middlewares/rateLimiter.middleware.js";
 import { notFoundHandler, errorHandler } from "./middlewares/errorHandler.middleware.js";
 import creatorRoutes from "./modules/creator/creator.routes.js";
+import superchatRoutes from "./modules/superchat/superchat.routes.js";
+import walletRoutes from "./modules/wallet/wallet.routes.js";
+import payoutRoutes from "./modules/payout/payout.routes.js";
+import webhookRoutes from "./modules/webhook/webhook.routes.js";
 
 // ─── ROUTES ───────────────────────────────────────────
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -49,6 +53,10 @@ app.get("/health", (req, res) => {
 // ─── ROUTES ───────────────────────────────────────────
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/creators", creatorRoutes);
+app.use("/api/v1/superchats", superchatRoutes);
+app.use("/api/v1/wallet", walletRoutes);
+app.use("/api/v1/payouts", payoutRoutes);
+app.use("/api/v1/webhooks", webhookRoutes);
 
 // ─── ERROR HANDLERS ───────────────────────────────────
 app.use(notFoundHandler);
